@@ -1,0 +1,213 @@
+main {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.disabledButton {
+  opacity: 0.5;
+}
+
+main button,
+main section select {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: 900;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+main button {
+  font-size: 28px;
+}
+
+main img {
+  height: 100px;
+  width: 180px;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+.activeButton {
+  background-color: #fff;
+  color: #1a1a1a;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  align-items: center;
+  gap: 16px;
+}
+
+section select {
+  width: 90%;
+  padding: 12px 8px 12px 8px;
+  height: 60px;
+  max-width: 320px;
+}
+
+section div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+section p {
+  margin-top: 24px;
+  font-size: 24px;
+}
+
+.stopButton {
+  font-size: 2.5em;
+  padding: 0.2em 0.4em;
+}
+
+section footer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 16px;
+}
+
+section footer select {
+  width: 65%;
+}
+
+section footer div {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.altomarMain {
+  background: rgb(19, 19, 19);
+  background: -moz-linear-gradient(
+    135deg,
+    rgba(19, 19, 19, 1) 85%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    135deg,
+    rgba(19, 19, 19, 1) 85%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background: linear-gradient(
+    135deg,
+    rgba(19, 19, 19, 1) 85%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#131313",endColorstr="#ffffff",GradientType=1);
+}
+.altomarMain select,
+.altomarMain button {
+  background-color: #1a1a1a;
+}
+
+.altomarMain .activeButton {
+  background-color: #fff;
+  color: #1a1a1a;
+}
+
+.lightHouseMain {
+  background: rgb(19, 19, 19);
+  background: -moz-linear-gradient(
+    35deg,
+    rgba(19, 19, 19, 1) 60%,
+    rgba(214, 51, 1, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    35deg,
+    rgba(19, 19, 19, 1) 60%,
+    rgba(214, 51, 1, 1) 100%
+  );
+  background: linear-gradient(
+    35deg,
+    rgba(19, 19, 19, 1) 60%,
+    rgba(214, 51, 1, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#131313",endColorstr="#d63301",GradientType=1);
+}
+.lightHouseMain select,
+.lightHouseMain button {
+  background-color: #d63301;
+}
+
+.lightHouseMain .activeButton {
+  background-color: #fff;
+  color: #d63301;
+}
+
+.stormMain {
+  background: rgb(19, 19, 19);
+  background: -moz-linear-gradient(
+    325deg,
+    rgba(19, 19, 19, 1) 60%,
+    rgba(48, 132, 201, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    325deg,
+    rgba(19, 19, 19, 1) 60%,
+    rgba(48, 132, 201, 1) 100%
+  );
+  background: linear-gradient(
+    325deg,
+    rgba(19, 19, 19, 1) 60%,
+    rgba(48, 132, 201, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#131313",endColorstr="#3084c9",GradientType=1);
+}
+.stormMain select,
+.stormMain button {
+  background-color: #3084c9;
+}
+
+.stormMain .activeButton {
+  background-color: #fff;
+  color: #3084c9;
+}
+
+@media (max-height: 700px) {
+  main img {
+    height: 70px;
+    width: 150px;
+  }
+}
+
+@media (min-height: 700px) {
+  section footer {
+    margin-top: 12vh;
+  }
+}
+
+@media (min-height: 800px) {
+  section footer {
+    margin-top: 18vh;
+  }
+}
+
+@media (min-height: 900px) {
+  section footer {
+    margin-top: 22vh;
+  }
+}
