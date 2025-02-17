@@ -1,15 +1,15 @@
-import AtmosphereC from "../assets/C-Atmosphere.wav";
-import AtmosphereCsus from "../assets/Csus-Atmosphere.wav";
-import AtmosphereD from "../assets/D-Atmosphere.wav";
-import AtmosphereDsus from "../assets/Dsus-Atmosphere.wav";
-import AtmosphereE from "../assets/E-Atmosphere.wav";
-import AtmosphereF from "../assets/F-Atmosphere.wav";
-import AtmosphereFsus from "../assets/Fsus-Atmosphere.wav";
-import AtmosphereG from "../assets/G-Atmosphere.wav";
-import AtmosphereGsus from "../assets/Gsus-Atmosphere.wav";
-import AtmosphereA from "../assets/A-Atmosphere.wav";
-import AtmosphereAsus from "../assets/Asus-Atmosphere.wav";
-import AtmosphereB from "../assets/B-Atmosphere.wav";
+import AtmosphereC from "../assets/Atmosphere/C-Atmosphere.wav";
+import AtmosphereCsus from "../assets/Atmosphere/Csus-Atmosphere.wav";
+import AtmosphereD from "../assets/Atmosphere/D-Atmosphere.wav";
+import AtmosphereDsus from "../assets/Atmosphere/Dsus-Atmosphere.wav";
+import AtmosphereE from "../assets/Atmosphere/E-Atmosphere.wav";
+import AtmosphereF from "../assets/Atmosphere/F-Atmosphere.wav";
+import AtmosphereFsus from "../assets/Atmosphere/Fsus-Atmosphere.wav";
+import AtmosphereG from "../assets/Atmosphere/G-Atmosphere.wav";
+import AtmosphereGsus from "../assets/Atmosphere/Gsus-Atmosphere.wav";
+import AtmosphereA from "../assets/Atmosphere/A-Atmosphere.wav";
+import AtmosphereAsus from "../assets/Atmosphere/Asus-Atmosphere.wav";
+import AtmosphereB from "../assets/Atmosphere/B-Atmosphere.wav";
 
 const Atmosphere = {
   c: AtmosphereC,

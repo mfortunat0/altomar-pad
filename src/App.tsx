@@ -11,6 +11,8 @@ import {
   nomenclatura,
 } from "./utils/imports";
 
+import srcAudio from "./assets/A-Atmosphere.wav";
+
 interface Theme {
   logoUrl: string;
   classContainer: string;
@@ -32,10 +34,10 @@ type Tons =
 
 function App() {
   let audioCtx: AudioContext;
-  let audioElement: HTMLAudioElement;
-  let source: MediaElementAudioSourceNode;
+  let track: MediaElementAudioSourceNode;
 
   const [gainNode, setGainNode] = useState<GainNode>();
+  const [audioElement, setAudioElement] = useState<HTMLMediaElement>();
   const [selectedTimbre, setSelectedTimbre] = useState("Atmosphere");
   const [selectedTheme, setSelectedTheme] = useState("0");
   const [lockButtons, setLockButtons] = useState(false);
@@ -70,6 +72,14 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  const onChangeSelectedTimbre = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTimbre(event.target.value);
+  };
+
+  const onChangeSelectedTheme = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTheme(event.target.value);
+  };
+
   const onChangeLanguage = (event: ChangeEvent<HTMLSelectElement>) => {
     const newValue = event.target.value;
     if (
@@ -81,90 +91,72 @@ function App() {
     }
   };
 
-  const onChangeSelectedTimbre = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedTimbre(event.target.value);
+  const stopAudio = () => {
+    if (audioElement && gainNode) {
+      audioElement.pause();
+      audioElement.currentTime = 0;
+      gainNode.gain.value = -1;
+    }
   };
-
-  const onChangeSelectedTheme = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedTheme(event.target.value);
-  };
-
-  const stopAudio = () => {};
 
   const fadeOut = () => {
     return new Promise((resolve) => {
-      let volume = 1;
-
+      setLockButtons(true);
+      if (gainNode) {
+        gainNode.gain.value = 1;
+      }
       const interval = setInterval(() => {
         if (gainNode) {
-          volume -= 0.02;
-          gainNode.gain.value = volume;
-          setGainNode(gainNode);
-          if (volume < 0.1) {
-            gainNode.gain.value = 0;
-            setGainNode(gainNode);
+          if (gainNode.gain.value > -1) {
+            gainNode.gain.value -= 0.08;
+          } else {
             clearInterval(interval);
-            resolve(null);
+            setLockButtons(false);
+            resolve("");
           }
         }
-      }, 10050);
+      }, 100);
     });
   };
 
   const fadeIn = async (tom: Tons) => {
     return new Promise((resolve) => {
-      if (!audioCtx) {
-        audioCtx = new AudioContext();
-      }
-      if (!audioElement) {
-        audioElement = new Audio(Atmosphere[tom]);
-        audioElement.loop = true;
-      }
-
-      if (audioElement) {
-        if (audioElement.played) {
-          audioElement = new Audio(Atmosphere[tom]);
+      setLockButtons(true);
+      audioCtx = new AudioContext();
+      const tempAudioElement = document.createElement(
+        "audio"
+      ) as HTMLMediaElement;
+      tempAudioElement.src = Atmosphere[tom];
+      track = audioCtx.createMediaElementSource(tempAudioElement);
+      track.connect(audioCtx.destination);
+      const tempNode = audioCtx.createGain();
+      track.connect(tempNode).connect(audioCtx.destination);
+      tempNode.gain.value = -1;
+      tempAudioElement.play();
+      tempAudioElement.loop = true;
+      const interval = setInterval(() => {
+        if (tempNode.gain.value < 1) {
+          tempNode.gain.value += 0.08;
+        } else {
+          setGainNode(tempNode);
+          setAudioElement(tempAudioElement);
+          clearInterval(interval);
+          setLockButtons(false);
+          resolve("");
         }
-      }
-
-      if (!source) {
-        source = audioCtx.createMediaElementSource(audioElement);
-      }
-
-      if (!gainNode) {
-        const newGainNode = audioCtx.createGain();
-        console.log(newGainNode);
-        setGainNode(newGainNode);
-      }
-
-      if (gainNode) {
-        source.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        gainNode.gain.value = 0;
-        audioElement.play();
-        let volume = 0;
-
-        const interval = setInterval(() => {
-          volume += 0.02;
-          gainNode.gain.value = volume;
-          setGainNode(gainNode);
-          console.log(gainNode, "asdas");
-          if (volume > 0.9) {
-            gainNode.gain.value = 1;
-            setGainNode(gainNode);
-            clearInterval(interval);
-            resolve(null);
-          }
-        }, 50);
-      }
+      }, 100);
     });
   };
 
   const onSelectedTom = async (tom: Tons) => {
     if (activeTom) {
-      await fadeOut();
-      setActiveTom(tom);
-      await fadeIn(tom);
+      if (audioElement?.paused) {
+        await fadeIn(tom);
+      } else {
+        await fadeOut();
+        setActiveTom(tom);
+        await fadeIn(tom);
+      }
     } else {
       await fadeIn(tom);
       setActiveTom(tom);
@@ -180,6 +172,7 @@ function App() {
         </select>
         <div>
           <button
+            disabled={lockButtons}
             className={activeTom === "c" ? "activeButton" : ""}
             onClick={() => onSelectedTom("c")}
             style={{
@@ -189,6 +182,7 @@ function App() {
             {languages[language][0]}
           </button>
           <button
+            disabled={lockButtons}
             className={activeTom === "cSus" ? "activeButton" : ""}
             onClick={() => onSelectedTom("cSus")}
             style={{
@@ -198,6 +192,7 @@ function App() {
             {languages[language][1]}
           </button>
           <button
+            disabled={lockButtons}
             className={activeTom === "d" ? "activeButton" : ""}
             onClick={() => onSelectedTom("d")}
             style={{
@@ -207,6 +202,7 @@ function App() {
             {languages[language][2]}
           </button>
           <button
+            disabled={lockButtons}
             className={activeTom === "dSus" ? "activeButton" : ""}
             onClick={() => onSelectedTom("dSus")}
             style={{
@@ -216,6 +212,7 @@ function App() {
             {languages[language][3]}
           </button>
           <button
+            disabled={lockButtons}
             className={activeTom === "e" ? "activeButton" : ""}
             onClick={() => onSelectedTom("e")}
             style={{
@@ -227,6 +224,7 @@ function App() {
           </button>
           <br />
           <button
+            disabled={lockButtons}
             className={activeTom === "f" ? "activeButton" : ""}
             onClick={() => onSelectedTom("f")}
             style={{
@@ -236,6 +234,7 @@ function App() {
             {languages[language][5]}
           </button>
           <button
+            disabled={lockButtons}
             className={activeTom === "fSus" ? "activeButton" : ""}
             onClick={() => onSelectedTom("fSus")}
             style={{
@@ -245,6 +244,7 @@ function App() {
             {languages[language][6]}
           </button>
           <button
+            disabled={lockButtons}
             className={activeTom === "g" ? "activeButton" : ""}
             onClick={() => onSelectedTom("g")}
             style={{
@@ -254,6 +254,7 @@ function App() {
             {languages[language][7]}
           </button>
           <button
+            disabled={lockButtons}
             className={activeTom === "gSus" ? "activeButton" : ""}
             onClick={() => onSelectedTom("gSus")}
             style={{
@@ -263,6 +264,7 @@ function App() {
             {languages[language][8]}
           </button>
           <button
+            disabled={lockButtons}
             className={activeTom === "a" ? "activeButton" : ""}
             onClick={() => onSelectedTom("a")}
             style={{
@@ -272,6 +274,7 @@ function App() {
             {languages[language][9]}
           </button>
           <button
+            disabled={lockButtons}
             className={activeTom === "aSus" ? "activeButton" : ""}
             onClick={() => onSelectedTom("aSus")}
             style={{
@@ -281,6 +284,7 @@ function App() {
             {languages[language][10]}
           </button>
           <button
+            disabled={lockButtons}
             className={activeTom === "b" ? "activeButton" : ""}
             onClick={() => onSelectedTom("b")}
             style={{
@@ -293,7 +297,11 @@ function App() {
         </div>
         <footer>
           <div>
-            <button className="stopButton" onClick={stopAudio}>
+            <button
+              disabled={lockButtons}
+              className="stopButton"
+              onClick={stopAudio}
+            >
               <FaCircleStop />
             </button>
             <select value={language} onChange={onChangeLanguage}>
