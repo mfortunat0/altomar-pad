@@ -1,36 +1,25 @@
+import "./App.css";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { FaCircleStop } from "react-icons/fa6";
 import logo from "./assets/logoBackground.png";
 import logoLightHouse from "./assets/logoBackgroundLighthouse.png";
 import logoStorm from "./assets/logoBackgroundStorm.png";
-import "./App.css";
-import {
-  Atmosphere,
-  cifraBemol,
-  cifraSustenido,
-  nomenclatura,
-} from "./utils/imports";
-
-import srcAudio from "./assets/A-Atmosphere.wav";
+import { Atmosphere } from "./utils/Atmosphere";
+import { Angels } from "./utils/Angels";
+import { Sky } from "./utils/Sky";
+import { Basic } from "./utils/Basic";
+import { Flanger } from "./utils/Flanger";
+import { FlangerMenor } from "./utils/FlangerMenor";
+import { Sino } from "./utils/Sino";
+import { SinoMenor } from "./utils/SinoMenor";
+import { Soft } from "./utils/Soft";
+import { SoftMenor } from "./utils/SoftMenor";
+import { cifraBemol, cifraSustenido, nomenclatura, Tons } from "./utils/config";
 
 interface Theme {
   logoUrl: string;
   classContainer: string;
 }
-
-type Tons =
-  | "c"
-  | "cSus"
-  | "d"
-  | "dSus"
-  | "e"
-  | "f"
-  | "fSus"
-  | "g"
-  | "gSus"
-  | "a"
-  | "aSus"
-  | "b";
 
 function App() {
   let audioCtx: AudioContext;
@@ -38,7 +27,7 @@ function App() {
 
   const [gainNode, setGainNode] = useState<GainNode>();
   const [audioElement, setAudioElement] = useState<HTMLMediaElement>();
-  const [selectedTimbre, setSelectedTimbre] = useState("Atmosphere");
+  const [selectedTimbre, setSelectedTimbre] = useState("Basic");
   const [selectedTheme, setSelectedTheme] = useState("0");
   const [lockButtons, setLockButtons] = useState(false);
   const [activeTom, setActiveTom] = useState("");
@@ -92,9 +81,11 @@ function App() {
   };
 
   const stopAudio = () => {
-    if (audioElement && gainNode) {
+    if (audioElement) {
       audioElement.pause();
       audioElement.currentTime = 0;
+    }
+    if (gainNode) {
       gainNode.gain.value = -1;
     }
   };
@@ -107,9 +98,13 @@ function App() {
       }
       const interval = setInterval(() => {
         if (gainNode) {
-          if (gainNode.gain.value > -1) {
-            gainNode.gain.value -= 0.08;
+          if (gainNode.gain.value > -1.2) {
+            gainNode.gain.value -= 0.2;
           } else {
+            if (audioElement) {
+              audioElement.pause();
+              audioElement.currentTime = 0;
+            }
             clearInterval(interval);
             setLockButtons(false);
             resolve("");
@@ -120,23 +115,64 @@ function App() {
   };
 
   const fadeIn = async (tom: Tons) => {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       setLockButtons(true);
       audioCtx = new AudioContext();
+
       const tempAudioElement = document.createElement(
         "audio"
       ) as HTMLMediaElement;
-      tempAudioElement.src = Atmosphere[tom];
+
+      switch (selectedTimbre) {
+        case "Atmosphere":
+          tempAudioElement.src = Atmosphere[tom];
+          break;
+        case "Angels":
+          tempAudioElement.src = Angels[tom];
+          break;
+        case "Sky":
+          tempAudioElement.src = Sky[tom];
+          break;
+        case "Basic":
+          tempAudioElement.src = Basic[tom];
+          break;
+        case "Flanger":
+          tempAudioElement.src = Flanger[tom];
+          break;
+        case "FlangerMenor":
+          tempAudioElement.src = FlangerMenor[tom];
+          break;
+        case "Sino":
+          tempAudioElement.src = Sino[tom];
+          break;
+        case "SinoMenor":
+          tempAudioElement.src = SinoMenor[tom];
+          break;
+        case "Soft":
+          tempAudioElement.src = Soft[tom];
+          break;
+        case "SoftMenor":
+          tempAudioElement.src = SoftMenor[tom];
+          break;
+        default:
+          tempAudioElement.src = Basic[tom];
+          break;
+      }
+
       track = audioCtx.createMediaElementSource(tempAudioElement);
       track.connect(audioCtx.destination);
+
       const tempNode = audioCtx.createGain();
+
       track.connect(tempNode).connect(audioCtx.destination);
+
       tempNode.gain.value = -1;
-      tempAudioElement.play();
+      await tempAudioElement.play();
       tempAudioElement.loop = true;
+
       const interval = setInterval(() => {
         if (tempNode.gain.value < 1) {
-          tempNode.gain.value += 0.08;
+          tempNode.gain.value += 0.12;
         } else {
           setGainNode(tempNode);
           setAudioElement(tempAudioElement);
@@ -149,17 +185,22 @@ function App() {
   };
 
   const onSelectedTom = async (tom: Tons) => {
-    if (activeTom) {
-      if (audioElement?.paused) {
-        await fadeIn(tom);
+    try {
+      if (activeTom) {
+        if (audioElement?.paused) {
+          setActiveTom(tom);
+          await fadeIn(tom);
+        } else {
+          await fadeOut();
+          setActiveTom(tom);
+          await fadeIn(tom);
+        }
       } else {
-        await fadeOut();
         setActiveTom(tom);
         await fadeIn(tom);
       }
-    } else {
-      await fadeIn(tom);
-      setActiveTom(tom);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -168,7 +209,16 @@ function App() {
       {/* <img src={themes[Number(selectedTheme)].logoUrl} alt="" /> */}
       <section>
         <select value={selectedTimbre} onChange={onChangeSelectedTimbre}>
+          <option value="Basic">Basic</option>
           <option value="Atmosphere">Atmosphere</option>
+          <option value="Angels">Angels</option>
+          <option value="Sky">Sky</option>
+          <option value="Flanger">Flanger</option>
+          <option value="Sino">Sino</option>
+          <option value="Soft">Soft</option>
+          <option value="FlangerMenor">FlangerMenor</option>
+          <option value="SinoMenor">SinoMenor</option>
+          <option value="SoftMenor">SoftMenor</option>
         </select>
         <div>
           <button
