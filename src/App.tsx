@@ -206,7 +206,7 @@ function App() {
 
   return (
     <main className={themes[Number(selectedTheme)].classContainer}>
-      {/* <img src={themes[Number(selectedTheme)].logoUrl} alt="" /> */}
+      <img src={themes[Number(selectedTheme)].logoUrl} alt="" />
       <section>
         <select value={selectedTimbre} onChange={onChangeSelectedTimbre}>
           <option value="Basic">Basic</option>
