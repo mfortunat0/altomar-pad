@@ -81,6 +81,7 @@ function App() {
   };
 
   const stopAudio = () => {
+    setLockButtons(false);
     if (audioElement) {
       audioElement.pause();
       audioElement.currentTime = 0;
@@ -348,7 +349,7 @@ function App() {
         <footer>
           <div>
             <button
-              disabled={lockButtons}
+              // disabled={lockButtons}
               className="stopButton"
               onClick={stopAudio}
             >
